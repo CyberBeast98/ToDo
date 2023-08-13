@@ -1,15 +1,34 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <input v-model="inputValue">
+  <button @click="createPost">createPost</button>
+  <div v-for="post in posts" :key="post">
+    <p>{{post.text}}</p>
+  </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
 
 export default {
   name: 'App',
-  components: {
-    HelloWorld
+  data() {
+    return {
+      inputValue: null,
+      posts: []
+    }
+  },
+  mounted() {
+    this.posts = JSON.parse(localStorage.posts)
+  },
+  methods: {
+    createPost() {
+      const post = {
+        text: this.inputValue
+      }
+
+      this.posts.push(post);
+
+      localStorage.posts = JSON.stringify(this.posts);
+    }
   }
 }
 </script>
