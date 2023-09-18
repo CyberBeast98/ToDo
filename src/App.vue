@@ -35,13 +35,14 @@
 </template>
 
 <script>
-import { mapState }   from "vuex";
-import PostButton from "@/components/buttons/postButton";
-import PostCounter from "@/components/postCounter";
+import { mapState }     from "vuex";
+import { v1 }           from 'uuid'
+import PostButton       from "@/components/buttons/postButton";
+import PostCounter      from "@/components/postCounter";
 import DeletePostButton from "@/components/buttons/deletePostButton";
-import EditPostButton from "@/components/buttons/editPostButton";
-import PostCard from "@/components/postCard";
-import EditPostPopup from "@/components/editPostPopup";
+import EditPostButton   from "@/components/buttons/editPostButton";
+import PostCard         from "@/components/postCard";
+import EditPostPopup    from "@/components/editPostPopup";
 
 export default {
   name: 'App',
@@ -80,12 +81,9 @@ export default {
       const newPost = {
         text: this.inputValue,
         isChecked: false,
-        id: Math.floor(Math.random() * 100000)
+        id: v1()
       };
 
-      this.posts.forEach(post => {
-        if (post.id === newPost.id) newPost.id = Math.floor(Math.random() * 100000)
-      });
       this.posts.push(newPost);
       this.inputValue = null;
       this.savePosts();
