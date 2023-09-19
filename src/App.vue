@@ -11,21 +11,28 @@
           @clickEvent="createPost"/>
     </div>
     <PostCounter :postsLength="posts.length"/>
-    <PostCard v-for="post in posts" :key="post.id" :isChecked="post.isChecked">
-      <div class="post__content">
-        <input
-            class="post__checkbox"
-            type="checkbox"
-            v-model="post.isChecked"
-            @click="completedTask"
-        >
-        <p class="post__text">{{ post.text }}</p>
-      </div>
-      <div>
-        <EditPostButton @editPost="editPost(post)"/>
-        <DeletePostButton @deletePost="deletePost(post)"/>
-      </div>
-    </PostCard>
+    <div class="post__buttons">
+      <FilterPostsButton buttonText="Done" @clickEvent="filterForTasks('done')" />
+      <FilterPostsButton buttonText="Active" @clickEvent="filterForTasks('active')" />
+      <FilterPostsButton buttonText="All" @clickEvent="filterForTasks()" />
+    </div>
+    <div :class="{'posts-container': posts.length > 8}">
+      <PostCard v-for="post in posts" :key="post.id" :isChecked="post.isChecked">
+        <div class="post__content">
+          <input
+              class="post__checkbox"
+              type="checkbox"
+              v-model="post.isChecked"
+              @click="completedTask"
+          >
+          <p class="post__text">{{ post.text }}</p>
+        </div>
+        <div>
+          <EditPostButton v-if="!post.isChecked" @editPost="editPost(post)"/>
+          <DeletePostButton @deletePost="deletePost(post)"/>
+        </div>
+      </PostCard>
+    </div>
     <EditPostPopup
         v-if="isShow"
         :editedText="editedText"
@@ -43,10 +50,12 @@ import DeletePostButton from "@/components/buttons/deletePostButton";
 import EditPostButton   from "@/components/buttons/editPostButton";
 import PostCard         from "@/components/postCard";
 import EditPostPopup    from "@/components/editPostPopup";
+import FilterPostsButton from "@/components/buttons/filterPostsButton";
 
 export default {
   name: 'App',
   components: {
+    FilterPostsButton,
     EditPostPopup,
     PostCard,
     EditPostButton,
@@ -109,6 +118,14 @@ export default {
       localStorage.posts = JSON.stringify(this.posts);
       this.$store.commit('setPost', null);
       this.$store.commit('setEditedText', null);
+    },
+    filterForTasks(filter) {
+      this.$store.commit('setPosts', []);
+      this.posts.push(...JSON.parse(localStorage.posts));
+
+      if (filter === 'done') return this.$store.commit('setPosts', this.posts.filter(post => post.isChecked));
+      if (filter === 'active') return this.$store.commit('setPosts', this.posts.filter(post => !post.isChecked));
+
     }
   }
 }
@@ -120,14 +137,23 @@ export default {
   margin: 0;
 }
 
+body {
+  overflow: hidden;
+}
+
+button {
+  border: none;
+  cursor: pointer;
+}
+
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   display: flex;
-  justify-content: center;
   flex-direction: column;
   align-items: center;
+  height: 100vh;
   color: #2c3e50;
   background-color: #ededed;
 }
@@ -152,6 +178,11 @@ export default {
   padding: 0 5px;
 }
 
+.posts-container {
+  overflow-y: scroll;
+  height: 75vh;
+}
+
 .post__content {
   display: flex;
   align-items: center;
@@ -167,5 +198,11 @@ export default {
 .post__text {
   width: 80%;
   font-size: 18px;
+}
+
+.post__buttons {
+  display: flex;
+  justify-content: space-between;
+  margin: 10px 0;
 }
 </style>

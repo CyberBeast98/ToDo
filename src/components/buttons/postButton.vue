@@ -32,7 +32,6 @@ export default {
   border: 1px solid #87ceeb;
   border-radius: 4px;
   transition: 0.5s;
-  cursor: pointer;
 }
 
 .create-post-button:hover {

@@ -14,8 +14,6 @@ export default {
 .edit-post-button {
   margin-right: 20px;
   background-color: transparent;
-  border: none;
-  cursor: pointer;
 }
 
 .edit-post-button img {

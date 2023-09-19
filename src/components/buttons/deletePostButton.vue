@@ -13,8 +13,6 @@ export default {
 <style scoped>
 .delete-post-button {
   background-color: transparent;
-  border: none;
-  cursor: pointer;
 }
 
 .delete-post-button img {
